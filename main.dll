@@ -1,0 +1,9 @@
+var version = last(modified);
+var Minecraft = "C:\ThisPC\Program Files(86)\Minecraft\versions\" + version{};
+var game = running(Minecraft);
+var Ipixel = ipixel.dll{}
+var Ipixel1 = ipixel11.dll{}
+
+
+Start{(Ipixel)}
+Start{(Ipixel1)}

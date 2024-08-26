@@ -1,0 +1,35 @@
+var lcoalhost = 'https://localhost:4444'
+
+function(CODE) {
+
+function(MODMENU){
+open(menu.html, using**(GAME)**)
+}
+
+if{
+
+KEY "f" Pressed then(
+if{
+KEY "4" Pressed then(
+show(MODMENU)
+)
+}
+)
+
+ELSE:{
+
+},
+}
+
+function(MENUoptions){     //all the mod menu options needed by this script//
+fly = true then broadcast fly
+maxgear = true then broadcast mxgear
+invis = true then broadcast invis
+owner = true then broadcast owner
+kill aura = true then broadcast aurakill
+esp = true then broadcast esp
+speed = true then broadcast speed
+automine = true then broadcast automine
+}
+
+end}

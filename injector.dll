@@ -1,0 +1,192 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <Windows.h>
+#include <TlHelp32.h>
+
+class MinecraftInjector {
+public:
+    MinecraftInjector() {
+        std::cout << "Minecraft6 Hack Injector Initialized\n";
+    }
+
+    void Inject() {
+        if (FindMinecraftProcess()) {
+            std::cout << "Minecraft process found. Injecting...\n";
+            if (CreateInjection()) {
+                std::cout << "Injection successful.\n";
+            } else {
+                std::cout << "Injection failed.\n";
+            }
+        } else {
+            std::cout << "Minecraft process not found.\n";
+        }
+    }
+
+private:
+    bool FindMinecraftProcess() {
+        HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+        if (hSnapshot == INVALID_HANDLE_VALUE) {
+            std::cerr << "Failed to create snapshot.\n";
+            return false;
+        }
+
+        PROCESSENTRY32 processEntry;
+        processEntry.dwSize = sizeof(PROCESSENTRY32);
+
+        if (!Process32First(hSnapshot, &processEntry)) {
+            std::cerr << "Failed to get first process.\n";
+            CloseHandle(hSnapshot);
+            return false;
+        }
+
+        bool found = false;
+        do {
+            if (std::wstring(processEntry.szExeFile) == L"Minecraft6.exe") {
+                std::cout << "Found Minecraft6.exe with PID: " << processEntry.th32ProcessID << "\n";
+                minecraftPID = processEntry.th32ProcessID;
+                found = true;
+                break;
+            }
+        } while (Process32Next(hSnapshot, &processEntry));
+
+        CloseHandle(hSnapshot);
+        return found;
+    }
+
+    bool CreateInjection() {
+        if (minecraftPID == 0) {
+            std::cerr << "No valid PID for Minecraft process.\n";
+            return false;
+        }
+
+        HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, minecraftPID);
+        if (hProcess == NULL) {
+            std::cerr << "Failed to open Minecraft process.\n";
+            return false;
+        }
+
+        std::string script = GenerateFakeScript();
+        LPVOID remoteMemory = VirtualAllocEx(hProcess, NULL, script.size(), MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+        if (remoteMemory == NULL) {
+            std::cerr << "Failed to allocate memory in Minecraft process.\n";
+            CloseHandle(hProcess);
+            return false;
+        }
+
+        if (!WriteProcessMemory(hProcess, remoteMemory, script.c_str(), script.size(), NULL)) {
+            std::cerr << "Failed to write script to Minecraft process.\n";
+            VirtualFreeEx(hProcess, remoteMemory, 0, MEM_RELEASE);
+            CloseHandle(hProcess);
+            return false;
+        }
+
+        // Create a remote thread to execute the script
+        HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)remoteMemory, NULL, 0, NULL);
+        if (hThread == NULL) {
+            std::cerr << "Failed to create remote thread.\n";
+            VirtualFreeEx(hProcess, remoteMemory, 0, MEM_RELEASE);
+            CloseHandle(hProcess);
+            return false;
+        }
+
+        WaitForSingleObject(hThread, INFINITE);
+        VirtualFreeEx(hProcess, remoteMemory, 0, MEM_RELEASE);
+        CloseHandle(hThread);
+        CloseHandle(hProcess);
+
+        return true;
+    }
+
+    std::string GenerateFakeScript() {
+        return "var game = Minecraft6.exe\n"
+               "var global = global.json\n"
+               "var gaming = games.json\n"
+               "var create = Create\n"
+               "var storage = Storage.Game.ADD\n"
+               "function(inject) {\n"
+               "    New(game).Create(global, gaming);\n"
+               "    Create? {\n"
+               "        for (int i = 1; i < 5; ++i) {\n"
+               "            create.Game.New(storage);\n"
+               "        }\n"
+               "    }\n"
+               "}\n"
+               "function(antiDetection) {\n"
+               "    if (gameDetected() && isCheating()) {\n"
+               "        sendMessage(\"Minecraft6 hacks injection is failing?\");\n"
+               "    }\n"
+               "}\n"
+               "function(executeScript) {\n"
+               "    executeScript(\"storage\", \"GAME\");\n"
+               "}\n"
+               "function(bigFile) {\n"
+               "    if (fileSize() > 500) {\n"
+               "        cancelImport();\n"
+               "        showMessage(\"You can't import this file\");\n"
+               "    }\n"
+               "}\n"
+               "function(antiMalwareScripts) {\n"
+               "    if (containsSensitiveData()) {\n"
+               "        closeRichTextBox();\n"
+               "    }\n"
+               "}\n"
+               "function(noLag) {\n"
+               "    if (fps < 35) {\n"
+               "        enableFPSBooster();\n"
+               "    }\n"
+               "}\n";
+    }
+
+    bool gameDetected() {
+        // Simulate game detection
+        return true;
+    }
+
+    bool isCheating() {
+        // Simulate cheating check
+        return false;
+    }
+
+    void sendMessage(const std::string& message) {
+        std::cout << "Sending message: " << message << "\n";
+    }
+
+    void executeScript(const std::string& storage, const std::string& game) {
+        std::cout << "Executing script with storage: " << storage << " and game: " << game << "\n";
+    }
+
+    int fileSize() {
+        // Simulate file size
+        return 600;
+    }
+
+    void cancelImport() {
+        std::cout << "Import canceled\n";
+    }
+
+    void showMessage(const std::string& message) {
+        std::cout << message << "\n";
+    }
+
+    bool containsSensitiveData() {
+        // Simulate sensitive data check
+        return false;
+    }
+
+    void closeRichTextBox() {
+        std::cout << "Rich text box closed\n";
+    }
+
+    void enableFPSBooster() {
+        std::cout << "FPS booster enabled\n";
+    }
+
+    DWORD minecraftPID = 0;
+};
+
+int main() {
+    MinecraftInjector injector;
+    injector.Inject();
+    return 0;
+}

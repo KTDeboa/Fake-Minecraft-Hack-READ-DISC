@@ -1,0 +1,14 @@
+void
+
+
+
+function(generateFakeUsername) {
+
+minecraft.USERNAME(replace, with(
+generate.USERNAME(
+using, "hecker", "god", "power", "creater", "dream", "fan",
+select(random, generate(random, 1-10))
+)
+))
+
+}

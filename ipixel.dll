@@ -1,0 +1,14 @@
+using main.dll(variables);
+var disabledetectedscripts.dll
+
+var injection = function {
+
+Minecraft(new(game)(
+Create(function(
+menu.html
+))
+),)
+
+Add.GAME(Create) //creates the mod menu inside the game script
+Add.GAME(disabledetectedscripts.dll) //disables any scripts that are detected
+end}

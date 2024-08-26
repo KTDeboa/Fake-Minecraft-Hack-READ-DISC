@@ -1,0 +1,11 @@
+1) copy all files in copythis folder
+
+2) run Minecraft (can be a client)
+
+3) join game
+
+4) paste into game chat (do not press enter simply press esc)
+
+5) open menu.html and replace the url with https://localhost:4444
+
+6) wait a few seconds then press F + 4 to open script hub

@@ -1,0 +1,7 @@
+var game = running(minecraft);
+
+function(detection) {
+
+script(game, detected, banning(close))
+
+end}

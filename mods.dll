@@ -1,0 +1,10 @@
+var modmen = menu.html
+
+
+function(MODtrue){
+modmen(buttion clicked? then(
+
+button(text,set(true, + text))
+
+end))
+}
